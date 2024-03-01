@@ -29,7 +29,43 @@ button {
 }
 
 img {
-  display: block;
-  max-width: 100%;
+  width: 100%; /* Зробимо фото 100% шириною відносно своєї батьківської клітинки */
   height: auto;
+  object-fit: cover;
 }
+.gallery {
+  display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Встановлюємо 5 колонок */
+    grid-gap: 20px;
+}
+
+
+.gallery-image-info{
+  display: flex;
+  flex-direction: wrap;
+  text-align: center;
+}
+
+.gallery-image {
+  width: 360px;
+  height: 200px;
+}
+
+  
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
