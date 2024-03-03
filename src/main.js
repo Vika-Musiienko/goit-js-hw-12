@@ -16,7 +16,7 @@ const loader = document.querySelector('.loader');
 const loadMoreBtn = document.getElementById('loadMoreBtn');
 let searchQuery = "";
 let currentPage = 1;
-const perPage = 15; // Додавання perPage як константи
+const perPage = 15;
 
 form.addEventListener("submit", onSubmit);
 loadMoreBtn.addEventListener('click', onLoadMore);
@@ -34,25 +34,6 @@ async function onLoadMore() {
     fetchAndRenderImages();
 }
 
-async function fetchAndRenderImages() {
-    try {
-        showLoader();
-        const data = await fetchData(searchQuery, currentPage, perPage); // Додавання perPage як третього аргументу
-        const images = data.hits;
-
-        if (images.length === 0) {
-            showNoImagesMessage();
-        } else {
-            renderImageGallery(images);
-            showLoadMoreButton();
-            smoothScroll();
-            lightbox.refresh();
-        }
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        hideLoader();
-    }
-}
 
 function renderImageGallery(images) {
     const murcup = renderMurcup(images);
@@ -76,18 +57,43 @@ function hideLoadMoreButton() {
     loadMoreBtn.style.display = 'none';
 }
 
-function showNoImagesMessage() {
-    iziToast.error({
+
+async function fetchAndRenderImages() {
+    try {
+        showLoader();
+        const data = await fetchData(searchQuery, currentPage, perPage);
+        const images = data.hits;
+        const totalHits = data.totalHits || 0;
+
+        if (images.length === 0) {
+            showNoImagesMessage();
+        } else {
+            renderImageGallery(images);
+            if (currentPage * perPage >= totalHits) {
+                hideLoadMoreButton();
+                showEndOfSearchMessage();
+            } else {
+                showLoadMoreButton();
+                smoothScroll();
+                lightbox.refresh();
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        hideLoader();
+    }
+}
+function showEndOfSearchMessage() {
+    iziToast.info({
         fontSize: 'large',
         close: false,
         position: 'topRight',
         messageColor: 'white',
         timeout: 2000,
-        backgroundColor: 'red',
-        message: 'Sorry, there are no images matching your search query. Please try again!',
+        backgroundColor: 'gray',
+        message: "We're sorry, but you've reached the end of search results.",
     });
 }
-
 function smoothScroll() {
     window.scrollBy({
         top: container.getBoundingClientRect().height * 2,
