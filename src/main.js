@@ -35,12 +35,6 @@ async function onLoadMore() {
 }
 
 
-function renderImageGallery(images) {
-    const murcup = renderMurcup(images);
-    container.insertAdjacentHTML('beforeend', murcup);
-    hideLoader();
-}
-
 function showLoader() {
     loader.style.display = 'block';
 }
@@ -56,7 +50,6 @@ function showLoadMoreButton() {
 function hideLoadMoreButton() {
     loadMoreBtn.style.display = 'none';
 }
-
 
 async function fetchAndRenderImages() {
     try {
@@ -75,14 +68,23 @@ async function fetchAndRenderImages() {
             } else {
                 showLoadMoreButton();
                 smoothScroll();
-                lightbox.refresh();
             }
+           
+            lightbox.refresh();
         }
     } catch (error) {
         console.error("Error fetching data:", error);
         hideLoader();
     }
 }
+
+function renderImageGallery(images) {
+    const murcup = renderMurcup(images);
+    container.insertAdjacentHTML('beforeend', murcup);
+    hideLoader();
+    lightbox.refresh();
+}
+
 function showEndOfSearchMessage() {
     iziToast.info({
         fontSize: 'large',
